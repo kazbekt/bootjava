@@ -1,20 +1,24 @@
+### 1. Обновление данных текущего пользователя
 PUT http://localhost:8080/api/account
 Content-Type: application/json
 Authorization: Basic user@gmail.com password
+Accept: application/json
 
 {
   "email": "user@gmail.com",
   "firstName": "New1_First",
   "lastName": "New1_Last"
 }
-###
 
+### 2. Получение данных текущего пользователя (после обновления)
 GET http://localhost:8080/api/account
 Authorization: Basic user@gmail.com password
-###
+Accept: application/json
 
+### 3. Регистрация нового пользователя
 POST http://localhost:8080/api/account/register
 Content-Type: application/json
+Accept: application/json
 
 {
   "email": "test@test.com",
@@ -22,7 +26,36 @@ Content-Type: application/json
   "lastName": "Test",
   "password": "test"
 }
-###
 
+### 4. Получение данных нового пользователя
 GET http://localhost:8080/api/account
 Authorization: Basic test@test.com test
+Accept: application/json
+
+### 5. Получение списка всех пользователей (требует админских прав)
+GET http://localhost:8080/api/users
+Authorization: Basic admin@javaops.ru admin
+Accept: application/json
+
+### 6. Поиск пользователя по email
+GET http://localhost:8080/api/users/search/findByEmailIgnoreCase?email=user@gmail.com
+Authorization: Basic admin@javaops.ru admin
+Accept: application/json
+
+### 7. Получение корня API (HAL browser)
+GET http://localhost:8080/api
+Authorization: Basic user@gmail.com password
+Accept: application/hal+json
+
+### 8. Получение кастомизированной ошибки после запроса несуществующего пользователя
+PUT http://localhost:8080/api/account
+Content-Type: application/json
+Authorization: Basic user@gmail.com password
+
+{
+  "id": 7,
+  "email": "user@gmail.com",
+  "firstName": "New_First",
+  "lastName": "New_Last"
+}
+###
