@@ -1,76 +1,148 @@
 ### 1. Обновление данных текущего пользователя
-PUT http://localhost:8080/api/account
+PUT http://localhost:8080/api/profile
 Content-Type: application/json
 Authorization: Basic user@gmail.com password
-Accept: application/json
 
 {
+  "name": "New User Name",
   "email": "user@gmail.com",
-  "firstName": "New1_First",
-  "lastName": "New1_Last"
+  "password": "newpassword"
 }
 
-### 2. Получение данных текущего пользователя (после обновления)
-GET http://localhost:8080/api/account
+### 2. Получение данных текущего пользователя
+GET http://localhost:8080/api/profile
 Authorization: Basic user@gmail.com password
 Accept: application/json
 
 ### 3. Регистрация нового пользователя
-POST http://localhost:8080/api/account/register
+POST http://localhost:8080/api/profile
 Content-Type: application/json
 Accept: application/json
 
 {
+  "name": "Test User",
   "email": "test@test.com",
-  "firstName": "Test",
-  "lastName": "Test",
   "password": "test"
 }
 
 ### 4. Получение данных нового пользователя
-GET http://localhost:8080/api/account
+GET http://localhost:8080/api/profile
 Authorization: Basic test@test.com test
 Accept: application/json
 
-### 5. Получение списка всех пользователей (требует админских прав)
-GET http://localhost:8080/api/users
+### 5. Получение списка всех пользователей (админ)
+GET http://localhost:8080/api/admin/users
 Authorization: Basic admin@javaops.ru admin
 Accept: application/json
 
-### 6. Поиск пользователя по email
-GET http://localhost:8080/api/users/search/findByEmailIgnoreCase?email=user@gmail.com
+### 6. Поиск пользователя по email (админ)
+GET http://localhost:8080/api/admin/users/by-email?email=user@gmail.com
 Authorization: Basic admin@javaops.ru admin
 Accept: application/json
 
-### 7. Получение корня API (HAL browser)
-GET http://localhost:8080/api
+### 7. Получение Swagger UI
+GET http://localhost:8080/swagger-ui.html
 Authorization: Basic user@gmail.com password
-Accept: application/hal+json
 
-### 8. Получение кастомизированной ошибки после запроса несуществующего пользователя
-PUT http://localhost:8080/api/account
+### 8. Тест ошибки валидации (несовпадение ID)
+PUT http://localhost:8080/api/profile
 Content-Type: application/json
 Authorization: Basic user@gmail.com password
 
 {
   "id": 7,
+  "name": "New Name",
   "email": "user@gmail.com",
-  "firstName": "New_First",
-  "lastName": "New_Last"
+  "password": "password"
 }
 
-### 9. Обновление данных пользователя v.2
-PUT http://localhost:8080/api/account
+### 9. Корректное обновление данных пользователя
+PUT http://localhost:8080/api/profile
 Content-Type: application/json
 Authorization: Basic user@gmail.com password
 
 {
-  "id": 1,
+  "name": "User Name Updated",
   "email": "user@gmail.com",
-  "firstName": "User_First_Update",
-  "lastName": "User_Last_Update",
-  "roles": [
-    "USER"
-  ]
+  "password": "updatedpassword"
 }
-####
+
+### 10. Удаление текущего пользователя
+DELETE http://localhost:8080/api/profile
+Authorization: Basic user@gmail.com password
+
+### 11. Создание пользователя админом
+POST http://localhost:8080/api/admin/users
+Content-Type: application/json
+Authorization: Basic admin@javaops.ru admin
+
+{
+  "name": "Admin Created User",
+  "email": "admincreated@test.com",
+  "password": "adminpass",
+  "roles": ["USER", "ADMIN"]
+}
+
+### 12. Получение пользователя по ID (админ)
+GET http://localhost:8080/api/admin/users/1
+Authorization: Basic admin@javaops.ru admin
+Accept: application/json
+
+### 13. Обновление пользователя админом
+PUT http://localhost:8080/api/admin/users/1
+Content-Type: application/json
+Authorization: Basic admin@javaops.ru admin
+
+{
+  "name": "Admin Updated Name",
+  "email": "user@gmail.com",
+  "password": "adminupdatedpass",
+  "roles": ["USER"]
+}
+
+### 14. Блокировка пользователя (админ)
+PATCH http://localhost:8080/api/admin/users/1?enabled=false
+Content-Type: application/json
+Authorization: Basic admin@javaops.ru admin
+
+### 15. Удаление пользователя админом
+DELETE http://localhost:8080/api/admin/users/3
+Authorization: Basic admin@javaops.ru admin
+
+### 16. Тест XSS защиты (должен вернуть ошибку)
+PUT http://localhost:8080/api/profile
+Content-Type: application/json
+Authorization: Basic user@gmail.com password
+
+{
+  "name": "<script>alert('XSS')</script>",
+  "email": "user@gmail.com",
+  "password": "password"
+}
+
+### 17. Тест дублирования email при регистрации
+POST http://localhost:8080/api/profile
+Content-Type: application/json
+
+{
+  "name": "Duplicate User",
+  "email": "user@gmail.com",
+  "password": "password"
+}
+
+### 18. Тест невалидных данных
+POST http://localhost:8080/api/profile
+Content-Type: application/json
+
+{
+  "name": "A",
+  "email": "invalid-email",
+  "password": "123"
+}
+
+### 19. Доступ к админскому API обычным пользователем (должна быть ошибка 403)
+GET http://localhost:8080/api/admin/users
+Authorization: Basic user@gmail.com password
+
+### 20. Доступ без аутентификации (должна быть ошибка 401)
+GET http://localhost:8080/api/profile
