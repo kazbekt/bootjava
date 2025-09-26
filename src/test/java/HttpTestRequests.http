@@ -58,4 +58,19 @@ Authorization: Basic user@gmail.com password
   "firstName": "New_First",
   "lastName": "New_Last"
 }
-###
+
+### 9. Обновление данных пользователя v.2
+PUT http://localhost:8080/api/account
+Content-Type: application/json
+Authorization: Basic user@gmail.com password
+
+{
+  "id": 1,
+  "email": "user@gmail.com",
+  "firstName": "User_First_Update",
+  "lastName": "User_Last_Update",
+  "roles": [
+    "USER"
+  ]
+}
+####
